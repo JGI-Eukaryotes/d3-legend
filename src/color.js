@@ -137,8 +137,15 @@ export default function color() {
           shapeSize[i].x +
           labelOffset}, ${shapeSize[i].y + shapeSize[i].height / 2 + 5})`
     } else if (orient === "horizontal") {
-      cellTrans = (d, i) =>
-        `translate(${i * (shapeSize[i].width + shapePadding)},0)`
+      const cellSize = textSize.map((d, i) =>
+        Math.max(d.width, shapeSize[i].width)
+      )
+
+      cellTrans = (d, i) => {
+        const width = sum(cellSize.slice(0, i))
+        return `translate(${width + i * shapePadding)},0)`
+      }
+
       textTrans = (d, i) => `translate(${shapeSize[i].width * textAlign +
         shapeSize[i].x},
           ${shapeSize[i].height + shapeSize[i].y + labelOffset + 8})`
