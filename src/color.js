@@ -143,7 +143,7 @@ export default function color() {
 
       cellTrans = (d, i) => {
         const width = sum(cellSize.slice(0, i))
-        return `translate(${width + i * shapePadding)},0)`
+        return `translate(${width + i * shapePadding},0)`
       }
 
       textTrans = (d, i) => `translate(${shapeSize[i].width * textAlign +
