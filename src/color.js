@@ -149,6 +149,19 @@ export default function color() {
       textTrans = (d, i) => `translate(${shapeSize[i].width * textAlign +
         shapeSize[i].x},
           ${shapeSize[i].height + shapeSize[i].y + labelOffset + 8})`
+
+    } else if (orient === "horizontal-inline") {
+      const cellSize = textSize.map((d, i) =>
+        d.width + shapeSize[i].width
+      )
+      cellTrans = (d, i) => {
+        const width = sum(cellSize.slice(0, i))
+        return `translate(${width + i * shapePadding},0)`
+      }
+
+      textTrans = (d, i) => "translate(" + (shapePadding + shapeSize[i].width) +
+                            "," + shapeSize[i].height + ")"
+
     }
 
     helper.d3_placement(orient, cell, cellTrans, text, textTrans, labelAlign)
@@ -270,7 +283,7 @@ export default function color() {
   legend.orient = function(_) {
     if (!arguments.length) return orient
     _ = _.toLowerCase()
-    if (_ == "horizontal" || _ == "vertical") {
+    if (_ == "horizontal" || _ == "vertical" || _ == "horizontal-inline") {
       orient = _
     }
     return legend

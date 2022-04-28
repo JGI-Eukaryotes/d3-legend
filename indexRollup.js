@@ -360,6 +360,18 @@ function color() {
       textTrans = function textTrans(d, i) {
         return "translate(" + (shapeSize[i].width * textAlign + shapeSize[i].x) + ",\n          " + (shapeSize[i].height + shapeSize[i].y + labelOffset + 8) + ")";
       };
+    } else if (orient === "horizontal-inline") {
+      var _cellSize2 = textSize.map(function (d, i) {
+        return d.width + shapeSize[i].width;
+      });
+      cellTrans = function cellTrans(d, i) {
+        var width = d3Array.sum(_cellSize2.slice(0, i));
+        return "translate(" + (width + i * shapePadding) + ",0)";
+      };
+
+      textTrans = function textTrans(d, i) {
+        return "translate(" + (shapePadding + shapeSize[i].width) + "," + shapeSize[i].height + ")";
+      };
     }
 
     helper.d3_placement(orient, cell, cellTrans, text, textTrans, labelAlign);
@@ -476,7 +488,7 @@ function color() {
   legend.orient = function (_) {
     if (!arguments.length) return orient;
     _ = _.toLowerCase();
-    if (_ == "horizontal" || _ == "vertical") {
+    if (_ == "horizontal" || _ == "vertical" || _ == "horizontal-inline") {
       orient = _;
     }
     return legend;
