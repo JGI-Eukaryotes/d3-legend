@@ -363,29 +363,29 @@ function color() {
       };
     } else if (orient === "horizontal-inline") {
       // calculate X and Y location
-      var _cellShift = [];
+      var cellShift = [];
       shapeSize.map(function (d, i) {
         if (i == 0) {
-          _cellShift.push([0, 0]);
+          cellShift.push([0, 0]);
         } else {
-          if (maxWidth && _cellShift[i - 1][0] + shapeSize[i].width + textSize[i].width > maxWidth) {
+          if (maxWidth && cellShift[i - 1][0] + shapeSize[i].width + textSize[i].width > maxWidth) {
             // newline. This could potentially mess up of the shapes have variable height within the line
-            _cellShift.push([0, _cellShift[i - 1][1] + Math.max(shapeSize[i].height, textSize[i].height)]);
+            cellShift.push([0, cellShift[i - 1][1] + Math.max(shapeSize[i].height, textSize[i].height)]);
           } else {
             // continue in this line
-            _cellShift.push([_cellShift[i - 1][0] + textSize[i - 1].width + shapePadding + shapeSize[i - 1].width, _cellShift[i - 1][1]]);
+            cellShift.push([cellShift[i - 1][0] + textSize[i - 1].width + shapePadding + shapeSize[i - 1].width, cellShift[i - 1][1]]);
           }
         }
       });
+
+      cellTrans = function cellTrans(d, i) {
+        return "translate(" + cellShift[i][0] + "," + cellShift[i][1] + ")";
+      };
+
+      textTrans = function textTrans(d, i) {
+        return "translate(" + (shapeSize[i].width + shapePadding) + "," + shapeSize[i].height + ")";
+      };
     }
-
-    cellTrans = function cellTrans(d, i) {
-      return "translate(" + cellShift[i][0] + "," + cellShift[i][1] + ")";
-    };
-
-    textTrans = function textTrans(d, i) {
-      return "translate(" + (shapeSize[i].width + shapePadding) + "," + shapeSize[i].height + ")";
-    };
 
     helper.d3_placement(orient, cell, cellTrans, text, textTrans, labelAlign);
     helper.d3_title(svg, title, classPrefix, titleWidth);
@@ -509,7 +509,7 @@ function color() {
 
   legend.maxWidth = function (_) {
     if (!arguments.length) return maxWidth;
-    maxWidth = Math.number(_);
+    maxWidth = parseInt(_);
     return legend;
   };
 

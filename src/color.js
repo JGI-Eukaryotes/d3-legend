@@ -169,14 +169,14 @@ export default function color() {
           }
         }
       })
-    }
 
-    cellTrans = (d, i) => {
-      return `translate(${cellShift[i][0]},${cellShift[i][1]})`
-    }
+      cellTrans = (d, i) => {
+        return `translate(${cellShift[i][0]},${cellShift[i][1]})`
+      }
 
-    textTrans = (d, i) => {
-      return `translate(${shapeSize[i].width+shapePadding},${shapeSize[i].height})`;
+      textTrans = (d, i) => {
+        return `translate(${shapeSize[i].width+shapePadding},${shapeSize[i].height})`;
+      }
     }
 
     helper.d3_placement(orient, cell, cellTrans, text, textTrans, labelAlign)
@@ -306,7 +306,7 @@ export default function color() {
 
   legend.maxWidth = function(_) {
     if (!arguments.length) return maxWidth;
-    maxWidth = Math.number(_);
+    maxWidth = parseInt(_);
     return legend;
   }
 
