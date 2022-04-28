@@ -272,6 +272,7 @@ function color() {
       labelDelimiter = helper.d3_defaultDelimiter,
       labelWrap = void 0,
       orient = "vertical",
+      maxWidth = void 0,
       ascending = false,
       path = void 0,
       titleWidth = void 0,
@@ -361,18 +362,30 @@ function color() {
         return "translate(" + (shapeSize[i].width * textAlign + shapeSize[i].x) + ",\n          " + (shapeSize[i].height + shapeSize[i].y + labelOffset + 8) + ")";
       };
     } else if (orient === "horizontal-inline") {
-      var _cellSize2 = textSize.map(function (d, i) {
-        return d.width + shapeSize[i].width;
+      // calculate X and Y location
+      var _cellShift = [];
+      shapeSize.map(function (d, i) {
+        if (i == 0) {
+          _cellShift.push([0, 0]);
+        } else {
+          if (maxWidth && _cellShift[i - 1][0] + shapeSize[i].width + textSize[i].width > maxWidth) {
+            // newline. This could potentially mess up of the shapes have variable height within the line
+            _cellShift.push([0, _cellShift[i - 1][1] + Math.max(shapeSize[i].height, textSize[i].height)]);
+          } else {
+            // continue in this line
+            _cellShift.push([_cellShift[i - 1][0] + textSize[i - 1].width + shapePadding + shapeSize[i - 1].width, _cellShift[i - 1][1]]);
+          }
+        }
       });
-      cellTrans = function cellTrans(d, i) {
-        var width = d3Array.sum(_cellSize2.slice(0, i));
-        return "translate(" + (width + i * shapePadding) + ",0)";
-      };
-
-      textTrans = function textTrans(d, i) {
-        return "translate(" + (shapePadding + shapeSize[i].width) + "," + shapeSize[i].height + ")";
-      };
     }
+
+    cellTrans = function cellTrans(d, i) {
+      return "translate(" + cellShift[i][0] + "," + cellShift[i][1] + ")";
+    };
+
+    textTrans = function textTrans(d, i) {
+      return "translate(" + (shapeSize[i].width + shapePadding) + "," + shapeSize[i].height + ")";
+    };
 
     helper.d3_placement(orient, cell, cellTrans, text, textTrans, labelAlign);
     helper.d3_title(svg, title, classPrefix, titleWidth);
@@ -491,6 +504,12 @@ function color() {
     if (_ == "horizontal" || _ == "vertical" || _ == "horizontal-inline") {
       orient = _;
     }
+    return legend;
+  };
+
+  legend.maxWidth = function (_) {
+    if (!arguments.length) return maxWidth;
+    maxWidth = Math.number(_);
     return legend;
   };
 

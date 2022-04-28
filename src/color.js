@@ -25,6 +25,7 @@ export default function color() {
     labelDelimiter = helper.d3_defaultDelimiter,
     labelWrap,
     orient = "vertical",
+    maxWidth,
     ascending = false,
     path,
     titleWidth,
@@ -151,17 +152,31 @@ export default function color() {
           ${shapeSize[i].height + shapeSize[i].y + labelOffset + 8})`
 
     } else if (orient === "horizontal-inline") {
-      const cellSize = textSize.map((d, i) =>
-        d.width + shapeSize[i].width
-      )
-      cellTrans = (d, i) => {
-        const width = sum(cellSize.slice(0, i))
-        return `translate(${width + i * shapePadding},0)`
-      }
+      // calculate X and Y location
+      const cellShift = [];
+      shapeSize.map ( (d, i) => {
+        if (i == 0) {
+          cellShift.push([0,0]);
+        } else {
+          if ( maxWidth && (cellShift[i-1][0] + shapeSize[i].width + textSize[i].width) > maxWidth ) {
+            // newline. This could potentially mess up of the shapes have variable height within the line
+            cellShift.push([0,
+                            cellShift[i-1][1] + Math.max(shapeSize[i].height,textSize[i].height)])
+          } else {
+            // continue in this line
+            cellShift.push([cellShift[i-1][0] + textSize[i-1].width + shapePadding + shapeSize[i-1].width,
+                            cellShift[i-1][1]])
+          }
+        }
+      })
+    }
 
-      textTrans = (d, i) => "translate(" + (shapePadding + shapeSize[i].width) +
-                            "," + shapeSize[i].height + ")"
+    cellTrans = (d, i) => {
+      return `translate(${cellShift[i][0]},${cellShift[i][1]})`
+    }
 
+    textTrans = (d, i) => {
+      return `translate(${shapeSize[i].width+shapePadding},${shapeSize[i].height})`;
     }
 
     helper.d3_placement(orient, cell, cellTrans, text, textTrans, labelAlign)
@@ -287,6 +302,12 @@ export default function color() {
       orient = _
     }
     return legend
+  }
+
+  legend.maxWidth = function(_) {
+    if (!arguments.length) return maxWidth;
+    maxWidth = Math.number(_);
+    return legend;
   }
 
   legend.ascending = function(_) {
