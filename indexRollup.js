@@ -370,7 +370,7 @@ function color() {
         } else {
           if (maxWidth && cellShift[i - 1][0] + shapeSize[i].width + textSize[i].width > maxWidth) {
             // newline. This could potentially mess up of the shapes have variable height within the line
-            cellShift.push([0, cellShift[i - 1][1] + Math.max(shapeSize[i].height, textSize[i].height)]);
+            cellShift.push([0, cellShift[i - 1][1] + shapePadding / 2 + Math.max(shapeSize[i].height, textSize[i].height)]);
           } else {
             // continue in this line
             cellShift.push([cellShift[i - 1][0] + textSize[i - 1].width + shapePadding + shapeSize[i - 1].width, cellShift[i - 1][1]]);
