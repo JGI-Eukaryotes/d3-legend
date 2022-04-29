@@ -272,7 +272,7 @@ function color() {
       labelDelimiter = helper.d3_defaultDelimiter,
       labelWrap = void 0,
       orient = "vertical",
-      maxWidth = void 0,
+      legendMaxWidth = void 0,
       ascending = false,
       path = void 0,
       titleWidth = void 0,
@@ -368,7 +368,7 @@ function color() {
         if (i == 0) {
           cellShift.push([0, 0]);
         } else {
-          if (maxWidth && cellShift[i - 1][0] + shapeSize[i].width + textSize[i].width > maxWidth) {
+          if (legendMaxWidth && cellShift[i - 1][0] + shapeSize[i].width + textSize[i].width > legendMaxWidth) {
             // newline. This could potentially mess up of the shapes have variable height within the line
             cellShift.push([0, cellShift[i - 1][1] + shapePadding / 2 + Math.max(shapeSize[i].height, textSize[i].height)]);
           } else {
@@ -508,8 +508,8 @@ function color() {
   };
 
   legend.maxWidth = function (_) {
-    if (!arguments.length) return maxWidth;
-    maxWidth = parseInt(_);
+    if (!arguments.length) return legendMaxWidth;
+    legendMaxWidth = parseInt(_);
     return legend;
   };
 
